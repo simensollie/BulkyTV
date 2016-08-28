@@ -1,31 +1,57 @@
 # Store all the start up variables so you can clean up when the script finishes.
-if ($startupvariables) { 
+if ($startupVariables) { 
 	try {
-		Remove-Variable -Name startupvariables  -Scope Global -ErrorAction SilentlyContinue 
+		Remove-Variable -Name startupVariables  -Scope Global -ErrorAction SilentlyContinue 
 	} catch { } 
 }
 New-Variable -force -name startupVariables -value ( Get-Variable | ForEach-Object { $_.Name } )
 ##################################################################################################
-<#
-Split-Path (Split-Path c:\dir1\dir2\dir3\file.txt -Parent) -Leaf
-#Output: dir3
-([uri]"c:\dir1\dir2\dir3\file.txt").segments[-2].trim('/')
-#Output: dir3 
-#>
+
+$SHOWPATH = "c:\users\simen\powershell script testing\Game of Thrones"
 
 <# Find name of the show #>
-$showDirectory = "c:\users\simen\powershell script testing\Game of Thrones"
-$path = [System.IO.Path];
-$show = $path::GetFileName($path::GetDirectoryName($showDirectory+"\file.txt"))
+function Get-ShowName {
+	param([string]$directoryPath)
+	$path = [System.IO.Path];
+	$SHOW = $path::GetFileName($path::GetDirectoryName($directoryPath+"\file.txt"))
+}
 
 <# Rename season folders #>
-$season = Get-ChildItem -dir
+function Rename-Seasons {
+	$show = Get-ChildItem -dir -path $showDirectory
+	foreach ($season in $show){
+		$char = [char[]]$season.FullName
+		[string]$x = ""
+		for ($i = 0; $i -lt $char.length; $i++){
+			if ($char[$i] -match "[0-9]"){
+				# rename folder to "Season $i"
+				[string]$x = [string]$char[$i]
+				if ($char[$i+1] -match "[0-9]"){
+					[string]$x += [string]$char[$i+1]
+				}
+				break
+			}
+		}
+	
+		if ($season.Name -ne "Season $x"){
+			Rename-Item -literalpath $season.FullName -newName "Season $x"
+		}
+	}
+}
+
+<# Rename episodes #>
 
 
+
+<# Calling functions #>
+Get-ShowName -$SHOWPATH
+Rename-Seasons
+
+#write-output $SHOW
 
 
 ##################################################################################################
-Function Clean-Memory {
+function Clean-Memory {
 	Get-Variable | Where-Object { $startupVariables -notcontains $_.Name } | ForEach-Object {
 		try { 
 			Remove-Variable -Name "$($_.Name)" -Force -Scope "global" -ErrorAction SilentlyContinue -WarningAction SilentlyContinue 
