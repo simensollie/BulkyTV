@@ -1,2 +1,2 @@
 # BulkyTV
-Scripts for renaming TV shows in bulk
+Powershell scripts for renaming TV shows in bulk
