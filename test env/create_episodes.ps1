@@ -15,9 +15,9 @@ for ($i = 1; $i -le $nrOfSeasons; $i++){
 	for ($j = 1; $j -le $nrOfEpisodes; $j++){
 	
 		$seasonsGreaterThan9 = -join("Game.of.Thrones.S$i","E0$j.720p.bleefyprod")
-		$episodesGreaterThan9 = -join("Game.of.Thrones.S0$i","E$j.720p.bleefyprod")
+		$episodesGreaterThan9 = -join("Game.of.Thrones.S0$i","E$j.720p.bleefyprod.avi")
 		$epAndSeasGreaterThan9 = -join("Game.of.Thrones.S$i","E$j.720p.bleefyprod")
-		$epAndSeasLessThan9 = -join("Game.of.Thrones.S0$i","E0$j.720p.bleefyprod")
+		$epAndSeasLessThan9 = -join("Game.of.Thrones.S0$i","E0$j.720p.bleefyprod.mkv")
 	
 		if ($i -gt 9){
 			new-item -type file -path ".\Season $i" -name $seasonsGreaterThan9
