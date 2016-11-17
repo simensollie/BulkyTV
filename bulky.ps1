@@ -10,15 +10,17 @@ New-Variable -force -name startupVariables -value ( Get-Variable | ForEach-Objec
 $SHOWPATH = "c:\users\simen\powershell script testing\Game of Thrones"
 
 <# Find name of the show #>
-function Get-ShowName {
-	param([string]$directoryPath)
-	$path = [System.IO.Path];
-	$SHOW = $path::GetFileName($path::GetDirectoryName($directoryPath+"\file.txt"))
-}
+$PATH = [System.IO.Path];
+$SHOWNAME = $path::GetFileName($PATH::GetDirectoryName($SHOWPATH+"\file.txt"))
+$FILEFORMAT = '.mkv', '.avi', '.mp4'
 
 <# Rename season folders #>
 function Rename-Seasons {
-	$show = Get-ChildItem -dir -path $showDirectory
+	# Gets list of folders/seasons and iterates through.
+	# Cast folder name to char[] and then iterate through to find 
+	# season number. If folder name is not equal to correct naming,
+	# renames folder.
+	$show = Get-ChildItem -dir -path $SHOWPATH
 	foreach ($season in $show){
 		$char = [char[]]$season.FullName
 		[string]$x = ""
@@ -32,7 +34,6 @@ function Rename-Seasons {
 				break
 			}
 		}
-	
 		if ($season.Name -ne "Season $x"){
 			Rename-Item -literalpath $season.FullName -newName "Season $x"
 		}
@@ -40,14 +41,20 @@ function Rename-Seasons {
 }
 
 <# Rename episodes #>
-
+#avi, mkv, mp4
+function Rename-Episodes {
+	$season = Get-ChildItem -file -path $SHOWPATH 
+	Get-ChildItem -file -r -path '.\Game of Thrones\' 
+		| Where-Object {$_.Extension -eq ".720p" -or $_.Extension -eq ".bleefyprod"}
+}
 
 
 <# Calling functions #>
-Get-ShowName -$SHOWPATH
+
 Rename-Seasons
 
-#write-output $SHOW
+write-output "Name of show: $SHOWNAME"
+
 
 
 ##################################################################################################
